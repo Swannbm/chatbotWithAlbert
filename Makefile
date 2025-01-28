@@ -7,4 +7,4 @@ lint:
 	ruff format .
 
 chat:
-	streamlit run app.py
+	streamlit run streamlit_chat.py
