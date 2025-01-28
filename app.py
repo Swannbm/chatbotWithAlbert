@@ -14,6 +14,9 @@ class AlbertAPI:
         self.base_url = f"{os.getenv('APIROOT')}/{os.getenv('APIVERSION')}"
         self.model = "mistralai/Pixtral-12B-2409"
 
+        if not self.api_key or not self.base_url:
+            raise ValueError("APIKEY, APIROOT ou APIVERSION manquant dans .env")
+
     def get_headers(self):
         return {
             "Authorization": f"Bearer {self.api_key}",
@@ -28,14 +31,19 @@ class AlbertAPI:
             "model": self.model,
             "messages": messages,
         }
-        response = requests.post(
-            self.get_endpoint_url("chat/completions"),
-            headers=self.get_headers(),
-            json=data,
-        )
-        response.raise_for_status()
-        result = response.json()
-        return result["choices"][0]["message"]["content"]
+        try:
+            response = requests.post(
+                self.get_endpoint_url("chat/completions"),
+                headers=self.get_headers(),
+                json=data,
+            )
+            response.raise_for_status()
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        except requests.exceptions.RequestException as e:
+            raise RuntimeError(
+                f"Erreur avec la requête : {e}, réponse : {response.text if 'response' in locals() else 'Aucune'}"
+            )
 
 
 api = AlbertAPI()
