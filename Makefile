@@ -8,3 +8,6 @@ lint:
 
 chat:
 	streamlit run streamlit_chat.py
+
+startfast:
+	uvicorn fast.main:app --reload --log-level debug
