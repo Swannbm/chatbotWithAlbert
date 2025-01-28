@@ -11,7 +11,8 @@ load_dotenv()
 class AlbertAPI:
     def __init__(self):
         self.api_key = os.getenv("APIKEY")
-        self.base_url = f"{os.getenv('APIROOT')}/{os.getenv('APIVERSION')}"
+        self.base_url = os.getenv("APIROOT")
+        self.version = os.getenv("APIVERSION")
         self.model = "mistralai/Pixtral-12B-2409"
 
         if not self.api_key or not self.base_url:
@@ -24,7 +25,10 @@ class AlbertAPI:
         }
 
     def get_endpoint_url(self, endpoint):
-        return f"{self.base_url}/{endpoint}"
+        url = self.base_url
+        if self.version:
+            url = f"{url}/{self.version}"
+        return f"{url}/{endpoint}"
 
     def send_question(self, messages):
         data = {
@@ -40,7 +44,10 @@ class AlbertAPI:
                 )
                 response.raise_for_status()
                 result = response.json()
-                return result["choices"][0]["message"]["content"]
+                if "choices" in result:
+                    # direct call to AlberAPI
+                    return result["choices"][0]["message"]["content"]
+                return result["reply"]
             except requests.exceptions.RequestException as e:
                 raise RuntimeError(
                     f"Erreur avec la requête : {e}, réponse : {response.text if 'response' in locals() else 'Aucune'}"
@@ -77,7 +84,9 @@ if user_input:
         reply = api.send_question(st.session_state.messages)
 
         with st.chat_message("assistant"):
-            st.markdown(reply)  # should use a stream to get the answer as quick as possible
+            st.markdown(
+                reply
+            )  # should use a stream to get the answer as quick as possible
         st.session_state.messages.append({"role": "assistant", "content": reply})
 
     except Exception as e:
