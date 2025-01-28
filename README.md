@@ -23,3 +23,12 @@ Install and start:
 
 * It also requires to complete the .env file.
 * type: `make startfast`
+
+
+Amélioration de l'API Albert:
+
+* normaliser les noms : collections / documents / files
+* ajouter des accès au données unitaires, par exemple pour vérifier si un fichier existe déjà
+* ajouter des capacités de recherche simple (nom du document qui contient...)
+* paginer les réponses obligatoirement, définir un modèle cible de json réponse dès la v2 pour faciliter les évolutions de l'API (ie. les utilisateurs ne doivent pas revoir tout leur code quand il y a une évolution)
+* choisir les colonnes à récupérer pour alléger la charge
