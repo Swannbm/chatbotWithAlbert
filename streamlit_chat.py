@@ -77,7 +77,12 @@ api = AlbertAPI()
 st.title("💬 Chatbot avec Albert")
 st.subheader("Pose une question à Albert et il répondra avec humour.")
 st.markdown(f"**url**: {api.base_url}")
-st.markdown("In direct connexion, you can chat, but RAG require Fast server to be running.")
+st.markdown(
+    "Avant de commencer, choisissez le mode de fonctionnement :"
+    "\n\n* **normal** = tchat avec de l'humour"
+    "\n* **RAG**: recherche de réponses dans le code source d'Albert (plus lent, garde aussi l'historique)"
+    "\n\nPour changer de fonctionnement, il est préférable de vider le cache."
+)
 mode = st.radio("Choisissez le mode :", options=["Normal", "RAG"])
 
 if "messages" not in st.session_state:
